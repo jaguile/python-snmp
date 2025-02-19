@@ -41,4 +41,18 @@ $ python3 v1-get.py
 SNMPv2-MIB::sysDescr.0 = #SNMP Agent on .NET Standard
 ```
 
+## Projecte
+
+### Opció 1: Fer un MiB browser online.
+
+Podríem implementar un MiB per Linux, un per Cisco i un per Mikrotik. Ens podríem instal·lar un browser per veure quin aspecte té i les seves funcionalitats i després intentar implementar-lo a nivell de web. Podríem fer funcionalitats com les últimes accions comeses, els últims get, una pàgina amb les notificacions o amb els traps. Passos:
+
+  0. Primeres passes amb Python.
+  1. Primeres passes amb Flask. Creació d'entorns virtuals Python. Instal·lació de Flask i de PySNMP. Rutes amb Flask. Jinja2
+  2. SNMP. Teoria. Pràcctica SNMP a Cisco Packet Tracer. Obtenir escalars i taules. 
+  3. SNMP en entorn real (Agent Linux? Cisco? Mikrotik?). Instal·lació d'un MiB browser. Paquet snmp a Linux. Paquet snmpd a Linux per instal·lar agent.
+  4. PySNMP. Exemple d'escrips de consultes. Explicació.
+  5. Desenvolupament 1 - Pàgina que demana dades per fer una consulta get a un agent. Resposta a nova pàgina.
+  6. Desenvolumament 2 - Fiquem resposta a una base de dades.
+  7. Desenvolupament 3 - Respostes es mostren en una nova fulla.
 
