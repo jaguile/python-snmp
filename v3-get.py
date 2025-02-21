@@ -9,7 +9,7 @@ async def run():
         snmpEngine,
         CommunityData("public"),
         # await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
-        await UdpTransportTarget.create(("192.168.1.12", 161)),
+        await UdpTransportTarget.create(("192.168.56.101", 161)),
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysUpTime", 0)),
