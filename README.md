@@ -96,6 +96,24 @@ Una branca és qualsevol subnivell dins de l'OID jeràrquic i taula és una estr
 
 ### Exemple de comandes
 
+Totes les comandes tenen unes opcions genèriques d'entrada i de sortida (OID input, `-I`; OID output, `-O`) que es descriuen al manual de `snmpcmd` (`man snmpcmd`).
+
+#### snmpget
+
+Demano el valor escalar de sysUpTime traient el tipus de format (`-OQ`)
+
+```bash
+$ snmpget -v2C -c public 192.168.56.101 -OQ sysUpTime.0
+DISMAN-EVENT-MIB::sysUpTimeInstance = 0:0:31:15.06
+```
+
+Sense l'opció:
+
+```bash
+$ snmpget -v2C -c public 192.168.56.101 sysUpTime.0
+DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (307481) 0:51:14.81
+```
+
 #### snmpwalk
 
 Recorre taules i branques.
@@ -205,6 +223,153 @@ IF-MIB::ifDescr.3 = STRING: enp0s8
 IF-MIB::ifType.1 = INTEGER: softwareLoopback(24)
 IF-MIB::ifType.2 = INTEGER: ethernetCsmacd(6)
 IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
+```
+
+#### snmpbulkwalk
+
+#### snmpgetnext
+
+#### snmpnetstat
+
+#### snmpnetstat
+
+#### snmpstatus
+
+#### snmptable
+
+#### snmptest
+
+#### snmptrap
+
+#### snmptranslate
+
+Tradueix OIDs a mode numèric o viceversa (a mode textual). Ho fa en base a MIBs que pots passar com a arguments a la mateixa comanda o a través dels MIBs que puguis tenir instal·lats. 
+
+Sense opcions extres, li has de passar tota la ruta del OID:
+
+```bash
+joan@super-ThinkBook-14-G4-IAP:~$ snmptranslate sysDescr
+sysDescr: Unknown Object Identifier (Sub-id not found: (top) -> sysDescr)
+
+joan@super-ThinkBook-14-G4-IAP:~$ snmptranslate .iso.org.dod.internet.mgmt.mib-2.system.sysDescr
+SNMPv2-MIB::sysDescr
+```
+
+Per defecte, et mostra el MIB, que és el mateix que passar-li l'opció `-OS`. Amb l'opció `-On` et tradueix a format numèric:
+
+```bash
+$ snmptranslate -On .iso.org.dod.internet.mgmt.mib-2.system.sysDescr
+.1.3.6.1.2.1.1.1
+```
+
+Amb l'opció -IR no cal passar tota la ruta ja que la comanda et fa una búsqueda massiva del nom:
+
+```bash
+$ snmptranslate -IR sysDescr
+SNMPv2-MIB::sysDescr
+```
+
+Si volem que ens mostri tot el camí:
+
+```bash
+$ snmptranslate -Of -IR sysDescr
+.iso.org.dod.internet.mgmt.mib-2.system.sysDescr
+```
+
+Si vols una descripció detallada de l'OID, pots fer servir l'opció `-Td`:
+
+```bash
+$ snmptranslate -Td -OS -IR system.sysDescr
+SNMPv2-MIB::sysDescr
+sysDescr OBJECT-TYPE
+  -- FROM	SNMPv2-MIB
+  -- TEXTUAL CONVENTION DisplayString
+  SYNTAX	OCTET STRING (0..255) 
+  DISPLAY-HINT	"255a"
+  MAX-ACCESS	read-only
+  STATUS	current
+  DESCRIPTION	"A textual description of the entity.  This value should
+            include the full name and version identification of
+            the system's hardware type, software operating-system,
+            and networking software."
+::= { iso(1) org(3) dod(6) internet(1) mgmt(2) mib-2(1) system(1) 1 }
+```
+
+i amb l'opció `-Tp` et mostra tota la branca en format arbre:
+
+```bash
+$ snmptranslate -Tp -OS -IR system
++--system(1)
+   |
+   +-- -R-- String    sysDescr(1)
+   |        Textual Convention: DisplayString
+   |        Size: 0..255
+   +-- -R-- ObjID     sysObjectID(2)
+   +-- -R-- TimeTicks sysUpTime(3)
+   |  |
+   |  +--sysUpTimeInstance(0)
+   |
+   +-- -RW- String    sysContact(4)
+   |        Textual Convention: DisplayString
+   |        Size: 0..255
+   +-- -RW- String    sysName(5)
+   |        Textual Convention: DisplayString
+   |        Size: 0..255
+   +-- -RW- String    sysLocation(6)
+   |        Textual Convention: DisplayString
+   |        Size: 0..255
+   +-- -R-- INTEGER   sysServices(7)
+   |        Range: 0..127
+   +-- -R-- TimeTicks sysORLastChange(8)
+   |        Textual Convention: TimeStamp
+   |
+   +--sysORTable(9)
+      |
+      +--sysOREntry(1)
+         |  Index: sysORIndex
+         |
+         +-- ---- INTEGER   sysORIndex(1)
+         |        Range: 1..2147483647
+         +-- -R-- ObjID     sysORID(2)
+         +-- -R-- String    sysORDescr(3)
+         |        Textual Convention: DisplayString
+         |        Size: 0..255
+         +-- -R-- TimeTicks sysORUpTime(4)
+                  Textual Convention: TimeStamp
+```
+
+Llistar tots els OID:
+
+```bash
+$ snmptranslate -To
+.1.3
+.1.3.6
+.1.3.6.1
+.1.3.6.1.1
+.1.3.6.1.2
+.1.3.6.1.2.1
+.1.3.6.1.2.1.1
+.1.3.6.1.2.1.1.1
+.1.3.6.1.2.1.1.2
+.1.3.6.1.2.1.1.3
+.1.3.6.1.2.1.1.3.0
+.1.3.6.1.2.1.1.4
+.1.3.6.1.2.1.1.5
+.1.3.6.1.2.1.1.6
+.1.3.6.1.2.1.1.7
+...
+
+$ snmptranslate -Tl | head
+.iso(1).org(3)
+.iso(1).org(3).dod(6)
+.iso(1).org(3).dod(6).internet(1)
+.iso(1).org(3).dod(6).internet(1).directory(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1).sysDescr(1)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1).sysObjectID(2)
+.iso(1).org(3).dod(6).internet(1).mgmt(2).mib-2(1).system(1).sysUpTime(3)
 ```
 
 ## Creació de l'entorn Python
