@@ -441,23 +441,23 @@ Podríem implementar un MiB per Linux, un per Cisco i un per Mikrotik. Ens podr�
 0. Primeres passes amb Python.
 1. Primeres passes amb Flask. Creació d'entorns virtuals Python. Instal·lació de Flask i de PySNMP. Rutes amb Flask. Jinja2
 
-1.0. Entrenaments creant rutes. Fent servir Jinja2.
+1. Entrenaments creant rutes. Fent servir Jinja2.
 
-1.1. Entrenament - connectar a BBDD?
+2. Entrenament - connectar a BBDD?
 
 2. SNMP. Teoria. Pràctica SNMP a Cisco Packet Tracer. Obtenir escalars i taules. 
 
-2.0. Afegir a teoria MiB / OID (Mirar l'enllaç que tenim)
+0. Afegir a teoria MiB / OID (Mirar l'enllaç que tenim)
 
-2.1. Afegir que trobin els OID que podran fer servir en el projecte
+1. Afegir que trobin els OID que podran fer servir en el projecte
 
-2.2. Afegir de trobar dades tabulars?
+2. Afegir de trobar dades tabulars?
 
 3. SNMP en entorn real (Agent Linux? Cisco? Mikrotik?). Instal·lació d'un MiB browser. Paquet snmp a Linux. Paquet snmpd a Linux per instal·lar agent. Obtenir escalars i taules.
 
-3.1. [SNMP commands](https://docs.lextudio.com/snmpclitools/)
+1. [SNMP commands](https://docs.lextudio.com/snmpclitools/)
 
-3.2. Obtenir llistat de OID a Linux i a Mikrotik
+2. Obtenir llistat de OID a Linux i a Mikrotik
 
 4. PySNMP. Exemple d'escrips de consultes. Explicació.
 5. Desenvolupament 1 - Pàgina que demana dades per fer una consulta get a un agent. Resposta a nova pàgina. Podem escollir agent, tipus de consulta.
