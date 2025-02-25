@@ -93,9 +93,9 @@ I comentar també la directiva `mibs` a `/etc/snmp/snmp.conf`:
 
 Una branca és qualsevol subnivell dins de l'OID jeràrquic i taula és una estructura de fil·les i columnes dins d'una branca. Per exemple, la taula `ifTable` (1.3.6.1.2.1.2.2), que té tantes fil·les com interfícies (en el cas de més avall, 3 interfícies), i que per columnes, té, per exemple:
 
-    * `ifIndex` - **1.3.6.1.2.1.2.2.1.1**
-    * `ifDescr` - **1.3.6.1.2.1.2.2.1.2**
-    * `ifType`  - **1.3.6.1.2.1.2.2.1.3**
+    * **ifIndex - 1.3.6.1.2.1.2.2.1.1**
+    * **ifDescr - 1.3.6.1.2.1.2.2.1.2**
+    * **ifType  - 1.3.6.1.2.1.2.2.1.3**
 
 
 ### Exemple de comandes
