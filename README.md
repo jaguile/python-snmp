@@ -3,9 +3,13 @@ Apunts i proves sobre l'ús de llibreries Python per implementar el protocol SNM
 
 ## Recursos
 [SNMP MIBs & SNMP OIDs explained](https://www.comparitech.com/net-admin/snmp-mibs-oids-explained/)
+
 [SNMP Library for Python 7.1.16](https://docs.lextudio.com/pysnmp/v7.1/docs/)
+
 [Buscador de MIBs](https://mibbrowser.online/mibdb_search.php)
+
 [SNMP command tools for Linux](https://docs.lextudio.com/snmpclitools/)
+
 [OIDs de Linux](http://www.debianadmin.com/linux-snmp-oids-for-cpumemory-and-disk-statistics.html)
 
 ## Test: Comandes per fer consultes. Linux as an agent
@@ -20,7 +24,7 @@ He instal·lat el paquet `snmpd` en una màquina vuirtual Ubuntu Server 24.04 i 
 
 ![alt text](image-1.png)
 
-També puc afegir la línea 
+He afegit a ferro la ip per la que vull que escolti l'agent. També puc afegir la línea 
 
 ```bash
 agentaddress UDP:161
@@ -47,7 +51,7 @@ view   systemonly  included   .1.3.6.1.2.1.25.1
 view   systemonly  included   .1.3.6.1.2.1.2
 ```
 
-Si ho vull poder veure tot (per fer proves, per exemple), he de reemplaçar aquestes directives `view` per 
+Si el que vull és poder veure-ho tot (per fer proves, per exemple), he de reemplaçar aquestes directives `view` per aquesta altra:
 
 ```bash
 view   allview    included   .1
@@ -73,13 +77,13 @@ Finalment, fem un `$ sudo systemctl restart snmpd.service`.
 $ sudo apt install snmp
 ```
 
-Aquest paquet et permet de fer consultes a un agent. Si volem treballar amb noms i no directament amb OID, hem d'instal·lar també els MiB en el client:
+Aquest paquet et permet de fer consultes a un agent. Si volem treballar amb noms i no directament amb OID, hem d'instal·lar també els MiB en el client, de cara a poder tenir l'estructura de la base de dades i els noms simbòlics dels objectes (OID) de la taula:
 
 ```bash
 $ sudo apt install snmp-mibs-downloader
 ```
 
-I comentar la directiva `mibs ` a `/etc/snmp/snmp.conf`:
+I comentar també la directiva `mibs` a `/etc/snmp/snmp.conf`:
 
 ```bash
 # mibs: 
@@ -89,9 +93,9 @@ I comentar la directiva `mibs ` a `/etc/snmp/snmp.conf`:
 
 Una branca és qualsevol subnivell dins de l'OID jeràrquic i taula és una estructura de fil·les i columnes dins d'una branca. Per exemple, la taula `ifTable` (1.3.6.1.2.1.2.2), que té tantes fil·les com interfícies (en el cas de més avall, 3 interfícies), i que per columnes, té, per exemple:
 
-    `ifIndex` - **1.3.6.1.2.1.2.2.1.1**
-    `ifDescr` - **1.3.6.1.2.1.2.2.1.2**
-    `ifType`  - **1.3.6.1.2.1.2.2.1.3**
+    * `ifIndex` - **1.3.6.1.2.1.2.2.1.1**
+    * `ifDescr` - **1.3.6.1.2.1.2.2.1.2**
+    * `ifType`  - **1.3.6.1.2.1.2.2.1.3**
 
 
 ### Exemple de comandes
