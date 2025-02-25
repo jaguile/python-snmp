@@ -98,7 +98,9 @@ Una branca és qualsevol subnivell dins de l'OID jeràrquic i taula és una estr
 * `ifType  - 1.3.6.1.2.1.2.2.1.3`
 
 
-### Exemple de comandes
+### Exemple de comandes del paquet SNMP de Linux
+
+Implementa operacions `SNMP`.
 
 Totes les comandes tenen unes opcions genèriques d'entrada i de sortida (OID input, `-I`; OID output, `-O`) que es descriuen al manual de `snmpcmd` (`man snmpcmd`).
 
@@ -118,9 +120,20 @@ $ snmpget -v2C -c public 192.168.56.101 sysUpTime.0
 DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (307481) 0:51:14.81
 ```
 
+#### snmpgetnext
+
+Implementa la consulta `GETNEXT`, que el que fa és retornar-te el següent en ordre lexicogràfic.
+
+```bash
+joan@super-ThinkBook-14-G4-IAP:~$ snmpgetnext -v2c -c public 192.168.56.101 sysUpTime.0
+SNMPv2-MIB::sysContact.0 = STRING: Juan Aguilera <jaguilera126@gmail.com>
+```
+
+En l'exemple li he passat el sysUpTime i m'ha retornat el sysContact.
+
 #### snmpwalk
 
-Recorre taules i branques.
+Recorre taules i branques. Ho fa fent servir peticions de tipus `snmpgetnext`.
 
 `snmpwalk` - recorre tota una branca de OIDs.
 
@@ -231,7 +244,11 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 
 #### snmpbulkwalk
 
-#### snmpgetnext
+Igual que `snmpwalk` però més eficient ja que ho fa amb peticions `GETBULK`. Com que les peticions `GETBULK` són a partir de la versió SNMPv2c, haurem de fer servir `snmpwalk` si estem en la versió 1.
+
+#### snmpset
+
+#### snmptrap
 
 #### snmpnetstat
 
@@ -242,8 +259,6 @@ IF-MIB::ifType.3 = INTEGER: ethernetCsmacd(6)
 #### snmptable
 
 #### snmptest
-
-#### snmptrap
 
 #### snmptranslate
 
