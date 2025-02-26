@@ -341,7 +341,72 @@ SNMPv2-MIB::sysContact.0 = STRING: Pedro Picapiedra <pedrowillma@gmail.com>
 
 #### snmptrap
 
-Per enviar notificacions des de l'agent cap al *network manager*.
+Per enviar notificacions (TRAPS) des de l'agent cap al *SNMP manager*. A Linux, podem rebre TRAPS d'agents amb el dimoni *snmptrapd*. La sintaxi de la comanda depèn molt de la versió, però bàsicament, hem d'especificar la versió, la cadena de comunitat del *Network Manager*, l'adreça del *Network Manager*, un OID de tipus de trap (OID_trap) i un o més OIDs amb valors.
+
+OIDs de trap:
+
+```bash
+joan@super-ThinkBook-14-G4-IAP:~$ snmptranslate -Tp .1.3.6.1.6.3.1.1.5
++--snmpTraps(5)
+   |
+   +--coldStart(1)
+   +--warmStart(2)
+   +--linkDown(3)
+   +--linkUp(4)
+   +--authenticationFailure(5)
+```
+
+Anem a fer la primera prova. Primer, haurem de configurar el *SNMP Manager* per a que pugui escoltar possibles notificacion:
+
+```bash
+joan@super-ThinkBook-14-G4-IAP:~$ apt search snmptrap
+S'està ordenant… Fet
+Cerca a tot el text… Fet
+libnetsnmptrapd40t64/noble 5.9.4+dfsg-1.1ubuntu3 amd64
+  SNMP (Simple Network Management Protocol) trap library
+
+snmptrapd/noble 5.9.4+dfsg-1.1ubuntu3 amd64
+  Net-SNMP notification receiver
+
+snmptrapfmt/noble 1.18 amd64
+  configurable snmp trap handler daemon for snmpd
+
+snmptt/noble,noble 1.5-1 all
+  SNMP trap handler for use with snmptrapd
+```
+
+Interessants els handlers de traps, que potser investigaré més tard. Ara m'interessa el paquet `snmptrapd`.
+
+De quina manera puc processar els traps a snmptrapd? `man snmptrapd.conf`:
+
+```bash
+There are currently three types of processing that can be specified:
+
+              log    log  the  details of the notification - either in a specified file,
+                     to standard output (or stderr), or via syslog (or similar).
+
+              execute
+                     pass the details of the trap to a specified  handler  program,  in‐
+                     cluding embedded perl.
+
+              net    forward the trap to another notification receiver.
+```
+
+Decomento aquesta línea del fitxer de configuració per permetre la rebuda de traps des de qualsevol lloc:
+
+```bash
+authCommunity log,execute,net public
+```
+
+Fem un restart del servei i ja tenim actiu el port 162 per escoltar traps:
+
+```bash
+joan@super-ThinkBook-14-G4-IAP:~$ sudo netstat -ul | grep snmp
+udp        0      0 localhost:snmp          0.0.0.0:*                          
+udp        0      0 0.0.0.0:snmp-trap       0.0.0.0:*                          
+udp6       0      0 ip6-localhost:snmp      [::]:*                             
+udp6       0      0 [::]:snmp-trap          [::]:*                             
+```
 
 #### snmpnetstat
 
@@ -533,7 +598,7 @@ SNMPv2-MIB::sysDescr.0 = #SNMP Agent on .NET Standard
   3. Principals queries snmp (snmpwalk, ...) i diferències entre elles.
   4. Obtenir i provar una sèrie de paràmetres tabulars a agent Linux
   5. Com fer servir snmptranslate
-  6. Traps
+  6. Traps. Gestionar traps: Handlers. Com afegir traps a una base de dades. Com configurar syslog per a que enviï traps.
   7. PySNMP. Generar tots els scripts a Python (snmpwalk, ...)
   8. Llistat de paràmetres escalars i tabulars - Cisco
   9. Llistat de paràmetres escalars i tabulars - Mikrotik
