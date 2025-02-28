@@ -392,10 +392,12 @@ There are currently three types of processing that can be specified:
               net    forward the trap to another notification receiver.
 ```
 
-Decomento aquesta línea del fitxer de configuració per permetre la rebuda de traps des de qualsevol lloc:
+Descomento / afegeixo aquestes línees en el fitxer de configuració `/etc/snmp/snmptrapd.conf` (*SNMP Manager*):
 
 ```bash
+disableAuthorization yes
 authCommunity log,execute,net public
+snmpTrapdAddr udp:162
 ```
 
 Fem un restart del servei i ja tenim actiu el port 162 per escoltar traps:
@@ -407,6 +409,56 @@ udp        0      0 0.0.0.0:snmp-trap       0.0.0.0:*
 udp6       0      0 ip6-localhost:snmp      [::]:*                             
 udp6       0      0 [::]:snmp-trap          [::]:*                             
 ```
+
+Exemple de *TRAP* enviat des de client amb la comanda `snmptrap`:
+
+```bash
+profe@joshua:~$ snmptrap -v2c -c public 192.168.56.1 '' SNMPv2-MIB::coldStart.0 SNMPv2-MIB::sysName.0 s "MyDevice"
+```
+
+Aquesta comanda envia un trap amb la versió 2c a la cadena de comunitat *public* i al *SNMP Manager* 192.168.56.1 de tipus `coldStart` i passant el `sysName` amb valor *MyDevice*. A part dels OIDs amb llurs valors que afegim al trap i del OID_type, també s'envia per defecte l'OID `sysUpTime`:
+
+![alt text](image-5.png)
+
+##### Exemple de com gestionar els traps rebuts 
+
+Anem a fer que els traps rebuts s'escriguin el fitxer de log `/var/log/trap.log`. Per això, he fet l'script en bash `snmptrap2log.sh:
+
+```bash
+#!/bin/bash
+# Escric els traps a un fitxer de logs
+LOG_F=/var/log/trap.log
+
+DATA=$(date +"%Y-%m-%d %T")
+
+while read line; do
+	echo "Capturat trap -- $DATA -- " >> $LOG_F
+	echo "----------------------------------" >> $LOG_F
+	echo "$line" >> $LOG_F
+	echo "----------------------------------" >> $LOG_F
+	echo >> $LOG_F
+done
+```
+
+Per a que aquest script pugui procesar el *TRAP* he d'afegir també la següent línea al `snmptrapd.conf`:
+
+```bash
+traphandle default /usr/bin/snmptrap2log.sh
+```
+
+Quan executo des de l'agent el *TRAP* d'abans, obtinc:
+
+```bash
+Capturat trap -- 2025-02-28 10:06:23 -- 
+----------------------------------
+<UNKNOWN>
+UDP: [192.168.56.101]:56365->[192.168.56.1]:162
+SNMPv2-MIB::snmpTrapOID.0 SNMPv2-MIB::coldStart.0
+SNMPv2-MIB::sysName.0 MyDevice
+----------------------------------
+```
+
+Crec que l'*<UNKNOWN>* de la primera línea és perquè a la versió 2c no es procesa el nom de l'agent (que en la comanda va entre cometes) i és allà on hauria d'anar.
 
 #### snmpnetstat
 
@@ -631,6 +683,8 @@ Podríem implementar un MiB per Linux, un per Cisco i un per Mikrotik. Ens podr�
   1. [SNMP commands](https://docs.lextudio.com/snmpclitools/)
 
   2. Obtenir llistat de OID a Linux i a Mikrotik
+
+  3. Wireshark
 
 4. PySNMP. Exemple d'escrips de consultes. Explicació.
 5. Desenvolupament 1 - Pàgina que demana dades per fer una consulta get a un agent. Resposta a nova pàgina. Podem escollir agent, tipus de consulta.
