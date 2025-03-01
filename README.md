@@ -460,16 +460,6 @@ SNMPv2-MIB::sysName.0 MyDevice
 
 Crec que l'*<UNKNOWN>* de la primera línea és perquè a la versió 2c no es procesa el nom de l'agent (que en la comanda va entre cometes) i és allà on hauria d'anar.
 
-#### snmpnetstat
-
-#### snmpnetstat
-
-#### snmpstatus
-
-#### snmptable
-
-#### snmptest
-
 #### snmptranslate
 
 Tradueix OIDs a mode numèric o viceversa (a mode textual). Ho fa en base a MIBs que pots passar com a arguments a la mateixa comanda o a través dels MIBs que puguis tenir instal·lats. 
@@ -647,10 +637,16 @@ SNMPv2-MIB::sysDescr.0 = #SNMP Agent on .NET Standard
 
   1. ~~Obtenir i provar una sèrie de paràmetres escalars a agent Linux~~
   2. ~~Llegir article sobre MiB/OID~~
-  3. Principals queries snmp (snmpwalk, ...) i diferències entre elles.
-  4. Obtenir i provar una sèrie de paràmetres tabulars a agent Linux
-  5. Com fer servir snmptranslate
-  6. Traps. Gestionar traps: Handlers. Com afegir traps a una base de dades. Com configurar syslog per a que enviï traps.
+  3. ~~Principals queries snmp (snmpwalk, ...) i diferències entre elles.~~
+  4. ~~Obtenir i provar una sèrie de paràmetres tabulars a agent Linux~~
+  5. ~~Com fer servir snmptranslate~~
+  6. Traps. Gestionar traps: Handlers. Com afegir traps a una base de dades. ~~Com configurar snmptrapd per a que registri els traps a un fitxer~~.
+
+  * https://ethertype.blogspot.com/2015/10/logging-snmp-traps-to-mysqlmariadb.html
+
+  * https://github.com/n0braist/snmp_trap_collector 
+
+
   7. PySNMP. Generar tots els scripts a Python (snmpwalk, ...)
   8. Llistat de paràmetres escalars i tabulars - Cisco
   9. Llistat de paràmetres escalars i tabulars - Mikrotik
