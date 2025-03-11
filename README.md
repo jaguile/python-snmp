@@ -460,6 +460,107 @@ SNMPv2-MIB::sysName.0 MyDevice
 
 Crec que l'*<UNKNOWN>* de la primera línea és perquè a la versió 2c no es procesa el nom de l'agent (que en la comanda va entre cometes) i és allà on hauria d'anar.
 
+##### Exemple de com gestionar inserir els traps en una base de dades
+
+Per comoditat, vaig a instal·lar *Mariadb* en l'agent (que és una màquina virtual). El lògic seria tenir la base de dades en un servidor centralitzant tots els traps que ens arribessin de tots els agents de la xarxa. 
+
+He de configurar el servei per a que escolti peticions a la xarxa (no només a localhost) i crearé un usuaria *Mariadb*, *mib*, que tingui accés a la base de dades *mib_browser*.
+
+**Pas 0. Instal·lo *Mariadb***
+
+**Pas 1. Password de l'usuari root a *Mariadb***
+Un cop instal·lo el servei, executo `$ sudo mysql_secure_installation` per establir l'usuari de root.
+
+**Pas 2. Faig que escolti peticions a la xarxa**
+He de comentar el paràmetre `bind-address` o donar-li el valor `0.0.0.0` editant l'arxiu `/etc/mysql/mariadb.conf.d/50-server.cnf`
+
+**Pas 3. Creació de la base de dades i de l'usuari que accedirà a la base de dades per afegir els traps**
+ 
+En aquest pas segueixo els passos de la variant 1 del següent enllaç:
+
+[snmptrap collector](https://github.com/n0braist/snmp_trap_collector)
+
+Que, bàsicament, és, crear la base de dades *net_snmp* amb un parell de taules:
+
+```bash
+$ mysql -u root -p
+USE net_snmp;
+DROP TABLE IF EXISTS notifications;
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `trap_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `date_time` datetime NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `auth` varchar(255) NOT NULL,
+  `type` ENUM('get','getnext','response','set','trap','getbulk','inform','trap2','report') NOT NULL,
+  `version` ENUM('v1','v2c', 'unsupported(v2u)','v3') NOT NULL,
+  `request_id` int(11) unsigned NOT NULL,
+  `snmpTrapOID` varchar(1024) NOT NULL,
+  `transport` varchar(255) NOT NULL,
+  `security_model` ENUM('snmpV1','snmpV2c','USM') NOT NULL,
+  `v3msgid` int(11) unsigned,
+  `v3security_level` ENUM('noAuthNoPriv','authNoPriv','authPriv'),
+  `v3context_name` varchar(32),
+  `v3context_engine` varchar(64),
+  `v3security_name` varchar(32),
+  `v3security_engine` varchar(64),
+  PRIMARY KEY  (`trap_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS varbinds;
+CREATE TABLE IF NOT EXISTS `varbinds` (
+  `trap_id` int(11) unsigned NOT NULL default '0',
+  `oid` varchar(1024) NOT NULL,
+  `type` ENUM('boolean','integer','bit','octet','null','oid','ipaddress','counter','unsigned','timeticks','opaque','unused1','counter64','unused2') NOT NULL,
+  `value` blob NOT NULL,
+  KEY `trap_id` (`trap_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+```
+
+La creació de l'usuari i permisos per accedir-hi a la base de dades que acabem de generar: 
+
+```bash
+MariaDB [(none)]> create user netsnmp identified by "password";
+MariaDB [(none)]> grant all privileges on net_snmp.* to mib;
+```
+
+Afegeixo aquestes dues línees a `/etc/snmp/snmptrapd.conf`:
+
+```bash
+# Logs a base de dades
+sqlMaxQueue 1
+sqlSaveInterval 9
+```
+
+I genero fitxer a `/etc/mysql/conf.d/snmptrapd.cnf` amb les credencials per connectar-me a la base de dades que tinc a l'agent:
+
+```bash
+[snmptrapd]
+user=netsnmp
+password=password
+host=192.168.56.101
+```
+
+I ja està. Un cop reiniciat el `snmptrapd` ja podem capturar traps dels agents.
+
+Per exemple, si jo envio des de l'agent:
+
+```bash
+$ snmptrap -v2c -c public 192.168.56.1 192.168.56.101 SNMPv2-MIB::coldStart.0 SNMPv2-MIB::sysName.0 s "MyDevice"
+```
+
+A la base de dades, tinc:
+
+```bash
+MariaDB [net_snmp]> select * from varbinds;
++---------+------------------------+-------+-----------------------------+
+| trap_id | oid                    | type  | value                       |
++---------+------------------------+-------+-----------------------------+
+|       1 | .1.3.6.1.6.3.1.1.4.1.0 | oid   | OID: .1.3.6.1.6.3.1.1.5.1.0 |
+|       1 | .1.3.6.1.2.1.1.5.0     | octet | STRING: "MyDevice"          |
++---------+------------------------+-------+-----------------------------+
+2 rows in set (0,000 sec)
+```
+
 #### snmptranslate
 
 Tradueix OIDs a mode numèric o viceversa (a mode textual). Ho fa en base a MIBs que pots passar com a arguments a la mateixa comanda o a través dels MIBs que puguis tenir instal·lats. 
@@ -640,20 +741,25 @@ SNMPv2-MIB::sysDescr.0 = #SNMP Agent on .NET Standard
   3. ~~Principals queries snmp (snmpwalk, ...) i diferències entre elles.~~
   4. ~~Obtenir i provar una sèrie de paràmetres tabulars a agent Linux~~
   5. ~~Com fer servir snmptranslate~~
-  6. Traps. Gestionar traps: Handlers. Com afegir traps a una base de dades. ~~Com configurar snmptrapd per a que registri els traps a un fitxer~~.
+  ~~6. Traps. Gestionar traps: Handlers. Com afegir traps a una base de dades. Com configurar snmptrapd per a que registri els traps a un fitxer~~.
 
-  * https://ethertype.blogspot.com/2015/10/logging-snmp-traps-to-mysqlmariadb.html
+  https://ethertype.blogspot.com/2015/10/logging-snmp-traps-to-mysqlmariadb.html
 
-  * https://github.com/n0braist/snmp_trap_collector 
+  https://github.com/n0braist/snmp_trap_collector 
 
 
-  7. PySNMP. Generar tots els scripts a Python (snmpwalk, ...)
-  8. Llistat de paràmetres escalars i tabulars - Cisco
-  9. Llistat de paràmetres escalars i tabulars - Mikrotik
-  10. Temporitzar Projecte
-  11. Document - enunciat del projecte
-  12. Rúbrica d'avaluació
-  13. Anar preparant les classes i el desenvolupament del projecte
+  7. PySNMP. Generar tots els scripts a Python (snmpwalk, ...). Repàs previ de tot el que he vist.
+  
+  8. Instal·lar MiB browser. Estudiar com és i quins paràmetres té per passar-ho a l'aplicació web.
+
+  - Anar desenvolupant el MiB per fases.
+  
+  9. Llistat de paràmetres escalars i tabulars - Cisco
+  10. Llistat de paràmetres escalars i tabulars - Mikrotik
+  11. Temporitzar Projecte
+  12. Document - enunciat del projecte
+  13. Rúbrica d'avaluació
+  14. Anar preparant les classes i el desenvolupament del projecte
 
 ### Opció 1: Fer un MiB browser online.
 
@@ -683,8 +789,9 @@ Podríem implementar un MiB per Linux, un per Cisco i un per Mikrotik. Ens podr�
   3. Wireshark
 
 4. PySNMP. Exemple d'escrips de consultes. Explicació.
-5. Desenvolupament 1 - Pàgina que demana dades per fer una consulta get a un agent. Resposta a nova pàgina. Podem escollir agent, tipus de consulta.
-6. Desenvolumament 2 - Fiquem resposta a una base de dades. Relacional? XML? ...?
-7. Desenvolupament 3 - Respostes es mostren en una nova fulla.
-8. Altres: SNMPv3, Alguna funcionalitat extra a la web (explorar / afegir agents, ...)
+5. Fase 1 - Pàgina que demana dades per fer una consulta get a un agent. Resposta a nova pàgina. Podem escollir agent, tipus de consulta.
+6. Fase 2 - Lliguem aplicació a una base de dades. Relacional? XML? ...?
+7. Altres: SNMPv3, Alguna funcionalitat extra a la web (explorar / afegir agents, ...), instal·lar loganalyzer a l'apache
+
+[L'última part parla sobre loganalyzer](https://github.com/n0braist/snmp_trap_collector)
 
