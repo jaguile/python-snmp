@@ -7,12 +7,14 @@ async def run():
 
     iterator = bulk_cmd(
         snmpEngine,
-        CommunityData("public"),
-        await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
+        CommunityData("public", mpModel=1),
+        await UdpTransportTarget.create(("192.168.56.101", 161)),
         ContextData(),
-        0,  # Non repeaters - valors escalars
-        25, # Repeaters - valors que es repeteixen dins d'una taula
-        ObjectType(ObjectIdentity('1.3.6'))
+        2, 
+        9, 
+        ObjectType(ObjectIdentity('1.3.6.1.2.1.1.3')),
+        ObjectType(ObjectIdentity('1.3.6.1.2.1.1.5')),
+        ObjectType(ObjectIdentity('1.3.6.1.2.1.2.2'))
     )
 
     errorIndication, errorStatus, errorIndex, varBinds = await iterator

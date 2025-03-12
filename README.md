@@ -813,18 +813,19 @@ No les implementarem, de moment. Els agents envien *traps* via comandes Linux i 
   https://github.com/n0braist/snmp_trap_collector 
 
 
-  7. PySNMP. Generar tots els scripts a Python (snmpwalk, ...). Repàs previ de tot el que he vist.
+  7. PySNMP. Generar tots els scripts a Python (snmpwalk, ...).
   
   8. Instal·lar MiB browser. Estudiar com és i quins paràmetres té per passar-ho a l'aplicació web.
 
   - Anar desenvolupant el MiB per fases.
   
-  9. Llistat de paràmetres escalars i tabulars - Cisco
-  10. Llistat de paràmetres escalars i tabulars - Mikrotik
-  11. Temporitzar Projecte
-  12. Document - enunciat del projecte
-  13. Rúbrica d'avaluació
-  14. Anar preparant les classes i el desenvolupament del projecte
+  9. Bateria de consultes a agent
+  10. Llistat de paràmetres escalars i tabulars - Cisco
+  11. Llistat de paràmetres escalars i tabulars - Mikrotik
+  12. Temporitzar Projecte
+  13. Document - enunciat del projecte
+  14. Rúbrica d'avaluació
+  15. Anar preparant les classes i el desenvolupament del projecte
 
 ### Opció 1: Fer un MiB browser online.
 
