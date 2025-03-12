@@ -122,7 +122,7 @@ DISMAN-EVENT-MIB::sysUpTimeInstance = Timeticks: (307481) 0:51:14.81
 
 #### snmpgetnext
 
-Implementa la consulta `GETNEXT`, que el que fa és retornar-te el següent en ordre lexicogràfic.
+Implementa la consulta `GETNEXT`, que el que fa és retornar-te el valor del següent OID en ordre lexicogràfic.
 
 ```bash
 joan@super-ThinkBook-14-G4-IAP:~$ snmpgetnext -v2c -c public 192.168.56.101 sysUpTime.0
@@ -130,6 +130,8 @@ SNMPv2-MIB::sysContact.0 = STRING: Juan Aguilera <jaguilera126@gmail.com>
 ```
 
 En l'exemple li he passat el sysUpTime i m'ha retornat el sysContact.
+
+Si el valor del següent OID és una taula, retornarà el valor de la primea fil·la i columna d'aquesta taula.
 
 #### snmpwalk
 
@@ -268,7 +270,7 @@ SYNOPSIS
               b  BITS
 ```
 
-Si en el client tenim el MIB al que referenciem en el snmpset podem ficar el signe `=` en comptes del tipus.
+Si en el client tenim carregat l'esquema del MIB al que referenciem en el snmpset podem ficar el signe `=` en comptes del tipus.
 
 Exemple. Vaig a canviar les dades de contacte de l'agent:
 
@@ -277,8 +279,6 @@ joan@super-ThinkBook-14-G4-IAP:~$ snmpset -v2c -c public 192.168.56.101 system.s
 Error in packet.
 Reason: noAccess
 Failed object: SNMPv2-MIB::sysContact.0
-
-
 ```
 
 Vaja. No m'ha deixat. Això és perque la cadena de comunitat que estic fent servir (*public*) és de lectura només. Si vaig al fitxer de configuració de l'agent (`rocommunity  public  default -V allview`):
@@ -314,7 +314,7 @@ Reason: notWritable (That object does not support modification)
 Failed object: SNMPv2-MIB::sysContact.0
 ```
 
-Ara nom em diu que no tinc accés, sinó que l'objecte que vull modificar no és modificable (*notWritable*) Això és perquè en l'arxiu '/etc/snmp/snmpd.conf` tinc configurat el valor de sysContact amb un valor que no puc modificar. Si el vull modificar he de comentar la línea corresponent:
+Ara no em diu que no tinc accés, sinó que l'objecte que vull modificar no és modificable (*notWritable*). Això és perquè en l'arxiu '/etc/snmp/snmpd.conf` tinc configurat el valor de sysContact amb un valor que no puc modificar. Si el vull modificar he de comentar la línea corresponent:
 
 ```bash
 # syslocation: The [typically physical] location of the system.
@@ -420,7 +420,7 @@ Aquesta comanda envia un trap amb la versió 2c a la cadena de comunitat *public
 
 ![alt text](image-5.png)
 
-##### Exemple de com gestionar els traps rebuts 
+**Exemple de com gestionar els traps rebuts**
 
 Anem a fer que els traps rebuts s'escriguin el fitxer de log `/var/log/trap.log`. Per això, he fet l'script en bash `snmptrap2log.sh:
 
@@ -458,9 +458,9 @@ SNMPv2-MIB::sysName.0 MyDevice
 ----------------------------------
 ```
 
-Crec que l'*<UNKNOWN>* de la primera línea és perquè a la versió 2c no es procesa el nom de l'agent (que en la comanda va entre cometes) i és allà on hauria d'anar.
+Crec que l'*UNKNOWN* de la primera línea és perquè a la versió 2c no es procesa el nom de l'agent (que en la comanda va entre cometes) i és allà on hauria d'anar.
 
-##### Exemple de com gestionar inserir els traps en una base de dades
+**Exemple de com gestionar inserir els traps en una base de dades**
 
 Per comoditat, vaig a instal·lar *Mariadb* en l'agent (que és una màquina virtual). El lògic seria tenir la base de dades en un servidor centralitzant tots els traps que ens arribessin de tots els agents de la xarxa. 
 
@@ -563,7 +563,7 @@ MariaDB [net_snmp]> select * from varbinds;
 
 #### snmptranslate
 
-Tradueix OIDs a mode numèric o viceversa (a mode textual). Ho fa en base a MIBs que pots passar com a arguments a la mateixa comanda o a través dels MIBs que puguis tenir instal·lats. 
+Tradueix OIDs a mode numèric o viceversa (a mode textual). Ho fa en base a esquemes *MIB* que pots passar com a arguments a la mateixa comanda o a través dels esquemes *MIB* que puguis tenir instal·lats. 
 
 Sense opcions extres, li has de passar tota la ruta del OID:
 
