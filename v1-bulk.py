@@ -10,8 +10,8 @@ async def run():
         CommunityData("public"),
         await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
         ContextData(),
-        0,
-        25,
+        0,  # Non repeaters - valors escalars
+        25, # Repeaters - valors que es repeteixen dins d'una taula
         ObjectType(ObjectIdentity('1.3.6'))
     )
 

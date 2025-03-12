@@ -732,6 +732,71 @@ $ python3 v1-get.py
 SNMPv2-MIB::sysDescr.0 = #SNMP Agent on .NET Standard
 ```
 
+## Com funciona PySNMP
+
+### SNMP Engine
+
+Qualsevol operació que es vulgui implementar amb aquest mòdul implica una instància de la classe `SnmpEngine`:
+
+```python
+snmpEngine = SnmpEngine()
+```
+
+Aconsellable cridar al final 
+
+```python
+snmpEngine.close_dispatcher()
+```
+
+### Queries
+
+A *PySNMP* hi han les següents funcions que implementen consultes / operacions SNMP: 
+
+```python
+['bulk_cmd', 'bulk_walk_cmd', 'cmdgen', 'get_cmd', 'next_cmd', 'set_cmd', 'walk_cmd']
+```
+
+### SNMP protocol i credencials
+
+Em centraré amb la versió 1 i la 2c, les quals accedeixen als agents a través de les cadenes de comunitat. Aquestes es declaren a partir de la classe `CommunityData`. El primer argument és el nom de la cadena i el segon és la versió de SNMP:
+
+```python
+CommunityData('public', mpModel=0)  # SNMPv1
+CommunityData('public', mpModel=1)  # SNMPv2c
+```
+
+### Connexió amb agent
+
+La connexió és per UDP fent servir la classe `UdpTransportTarget` i el seu mètode `create`. El primer argument és l'agent i el segon el port de l'agent:
+
+```python
+await UdpTransportTarget.create(("demo.pysnmp.com", 161))
+```
+
+### ContextData
+
+Un agent pot tenir múltiples col·leccions de MIBs. `ContextData` serveix per especificar una en concret. Nosaltres la deixem amb els arguments per defecte, `ContextData()`.
+
+### MIB Object
+
+Per definir un OID i llur valor, necessitem dues classes: `ObjectIdentity` (OID) i `ObjectType` (OID i valor). `Objectype` tindrà el valor de l'OID retornat per l'agent:
+
+```bash
+>>> from pysnmp.hlapi.v3arch.asyncio import *
+>>>
+>>> g = await get_cmd(SnmpEngine(),
+...            CommunityData('public'),
+...            await UdpTransportTarget.create(('demo.pysnmp.com', 161)),
+...            ContextData(),
+...            ObjectType(ObjectIdentity('SNMPv2-MIB', 'sysUpTime', 0)))
+>>> g
+(None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.3.0'), TimeTicks(44430646))])
+```
+
+### Traps / Nofiticacions amb PySNMP
+
+No les implementarem, de moment. Els agents envien *traps* via comandes Linux i el *Network Manager* les rebrà com hem vist en l'apartat [snmptrap](#snmptrap).
+
 ## Projecte
 
 ### Tasques
