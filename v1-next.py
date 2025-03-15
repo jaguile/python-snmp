@@ -8,9 +8,9 @@ async def run():
     iterator = next_cmd(
         snmpEngine,
         CommunityData("public"),
-        await UdpTransportTarget.create(("demo.pysnmp.com", 161)),
+        await UdpTransportTarget.create(("192.168.56.101", 161)),
         ContextData(),
-        ObjectType(ObjectIdentity('1.3.6.1.2.1.2.2.1'))
+        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysUpTime", 0))
     )
 
     errorIndication, errorStatus, errorIndex, varBinds = await iterator

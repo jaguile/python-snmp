@@ -4,13 +4,13 @@ Apunts i proves sobre l'ús de llibreries Python per implementar el protocol SNM
 ## Recursos
 [SNMP MIBs & SNMP OIDs explained](https://www.comparitech.com/net-admin/snmp-mibs-oids-explained/)
 
-[SNMP Library for Python 7.1.16](https://docs.lextudio.com/pysnmp/v7.1/docs/)
-
 [Buscador de MIBs](https://mibbrowser.online/mibdb_search.php)
 
-[SNMP command tools for Linux](https://docs.lextudio.com/snmpclitools/)
-
 [OIDs de Linux](http://www.debianadmin.com/linux-snmp-oids-for-cpumemory-and-disk-statistics.html)
+
+[snmptrap collector](https://github.com/n0braist/snmp_trap_collector)
+
+[SNMP Library for Python 7.1.16](https://docs.lextudio.com/pysnmp/v7.1/docs/)
 
 ## Test: Comandes per fer consultes. Linux as an agent
 
@@ -793,6 +793,8 @@ Per definir un OID i llur valor, necessitem dues classes: `ObjectIdentity` (OID)
 (None, 0, 0, [ObjectType(ObjectIdentity('1.3.6.1.2.1.1.3.0'), TimeTicks(44430646))])
 ```
 
+Podem definir `ObjectIdentity` com a l'exemple o directament passant un string amb el valor de l'OID. Veure [MIB Variables](https://docs.lextudio.com/pysnmp/v7.1/docs/api-reference#mib-variables)
+
 ### Traps / Nofiticacions amb PySNMP
 
 No les implementarem, de moment. Els agents envien *traps* via comandes Linux i el *Network Manager* les rebrà com hem vist en l'apartat [snmptrap](#snmptrap).
@@ -813,9 +815,9 @@ No les implementarem, de moment. Els agents envien *traps* via comandes Linux i 
   https://github.com/n0braist/snmp_trap_collector 
 
 
-  7. PySNMP. Generar tots els scripts a Python (snmpwalk, ...).
+  ~~7. PySNMP. Generar i provar que funcionen tots els scripts a Python (snmpwalk, ...).~~
   
-  8. Instal·lar MiB browser. Estudiar com és i quins paràmetres té per passar-ho a l'aplicació web.
+  ~~8. Instal·lar MiB browser. Estudiar com és i quins paràmetres té per passar-ho a l'aplicació web.~~
 
   - Anar desenvolupant el MiB per fases.
   
@@ -829,7 +831,7 @@ No les implementarem, de moment. Els agents envien *traps* via comandes Linux i 
 
 ### Opció 1: Fer un MiB browser online.
 
-Podríem implementar un MiB per Linux, un per Cisco i un per Mikrotik. Ens podríem instal·lar un browser per veure quin aspecte té i les seves funcionalitats i després intentar implementar-lo a nivell de web. Podríem fer funcionalitats com les últimes accions comeses, els últims get, una pàgina amb les notificacions o amb els traps. Passos:
+Podríem implementar un MiB browser. Ens podríem instal·lar un MiB browser per veure quin aspecte té i les seves funcionalitats i després intentar implementar-lo a nivell de web. Podríem fer funcionalitats com les últimes accions comeses, els últims get, una pàgina amb les notificacions o amb els traps. Passos:
 
 0. Primeres passes amb Python.
 1. Primeres passes amb Flask. Creació d'entorns virtuals Python. Instal·lació de Flask i de PySNMP. Rutes amb Flask. Jinja2

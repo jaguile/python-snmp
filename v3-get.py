@@ -13,6 +13,7 @@ async def run():
         ContextData(),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysDescr", 0)),
         ObjectType(ObjectIdentity("SNMPv2-MIB", "sysUpTime", 0)),
+        ObjectType(ObjectIdentity("SNMPv2-MIB", "sysContact", 0))
     )
 
     errorIndication, errorStatus, errorIndex, varBinds = await iterator
