@@ -10,10 +10,10 @@ async def run():
         CommunityData("public", mpModel=1),
         await UdpTransportTarget.create(("192.168.56.101", 161)),
         ContextData(),
-        2, 
-        9, 
-        ObjectType(ObjectIdentity('1.3.6.1.2.1.1.3')),
-        ObjectType(ObjectIdentity('1.3.6.1.2.1.1.5')),
+        1, 
+        1, 
+        # ObjectType(ObjectIdentity('1.3.6.1.2.1.1.3')),
+        ObjectType(ObjectIdentity('1.3.6.1.2.1.1.1')),
         ObjectType(ObjectIdentity('1.3.6.1.2.1.2.2'))
     )
 

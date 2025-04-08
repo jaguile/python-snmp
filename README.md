@@ -8,6 +8,8 @@ Apunts i proves sobre l'ús de llibreries Python per implementar el protocol SNM
 
 [OIDs de Linux](http://www.debianadmin.com/linux-snmp-oids-for-cpumemory-and-disk-statistics.html)
 
+[SNMP a Linux](https://nsrc.org/workshops/2021/afnog-nme/netmgmt/en/snmp/exercises-snmp.htm)
+
 [snmptrap collector](https://github.com/n0braist/snmp_trap_collector)
 
 [SNMP Library for Python 7.1.16](https://docs.lextudio.com/pysnmp/v7.1/docs/)
