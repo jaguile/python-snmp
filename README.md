@@ -777,7 +777,7 @@ await UdpTransportTarget.create(("demo.pysnmp.com", 161))
 
 ### ContextData
 
-Un agent pot tenir múltiples col·leccions de MIBs. `ContextData` serveix per especificar una en concret. Nosaltres la deixem amb els arguments per defecte, `ContextData()`.
+Un agent pot gestionar múltiples col·leccions de MIBs representant diferents instàncies de Hw o Sw. `ContextData` serveix per especificar una en concret. Nosaltres la deixem amb els arguments per defecte, `ContextData()`.
 
 ### MIB Object
 
@@ -823,10 +823,10 @@ No les implementarem, de moment. Els agents envien *traps* via comandes Linux i 
 
   - Anar desenvolupant el MiB per fases.
   
-  9. Bateria de consultes a agent
+  ~~9. Bateria de consultes a agent~~
   10. Llistat de paràmetres escalars i tabulars - Cisco
   11. Llistat de paràmetres escalars i tabulars - Mikrotik
-  12. Temporitzar Projecte
+  ~~12. Temporitzar Projecte~~
   13. Document - enunciat del projecte
   14. Rúbrica d'avaluació
   15. Anar preparant les classes i el desenvolupament del projecte

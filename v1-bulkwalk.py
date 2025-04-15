@@ -11,7 +11,6 @@ async def run():
             ContextData(),
             0,
             1,
-            # ObjectType(ObjectIdentity('1.3.6.1.2.1.2.2')),
             ObjectType(ObjectIdentity('.1.3.6.1.2.1.4.20')),
             lexicographicMode = False
         )
@@ -26,8 +25,5 @@ async def run():
         else:
             for varBind in varBinds:
                 print(" = ".join([x.prettyPrint() for x in varBind]))
-    
-    snmpEngine.close_dispatcher()
-
 
 asyncio.run(run())
