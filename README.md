@@ -462,7 +462,7 @@ SNMPv2-MIB::sysName.0 MyDevice
 
 Crec que l'*UNKNOWN* de la primera línea és perquè a la versió 2c no es procesa el nom de l'agent (que en la comanda va entre cometes) i és allà on hauria d'anar.
 
-**Exemple de com gestionar inserir els traps en una base de dades**
+**Exemple de com gestionar i inserir els traps en una base de dades**
 
 Per comoditat, vaig a instal·lar *Mariadb* en l'agent (que és una màquina virtual). El lògic seria tenir la base de dades en un servidor centralitzant tots els traps que ens arribessin de tots els agents de la xarxa. 
 
